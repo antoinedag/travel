@@ -1,7 +1,14 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const container = d3.select("#globe-container").style("text-align", "center");
+  const container = d3
+    .select("#globe-container")
+    .style("display", "flex")
+    .style("justify-content", "center")
+    .style("align-items", "center")
+    .style("width", "100%")
+    .style("height", "auto")
+    .style("position", "relative"); // Assurer un bon centrage
 
-  let width = Math.min(window.innerWidth * 0.8, 600);
+  let width = Math.min(window.innerWidth * 0.9, 600);
   let height = width;
 
   const projection = d3
@@ -15,15 +22,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const svg = container
     .append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .style("display", "block") // Évite les marges indésirables
+    .style("max-width", "100%") // S'adapte aux petits écrans
+    .style("height", "auto");
 
-  // Empêcher le scroll de la page lors de l'interaction avec le globe
+  // Empêcher le défilement de la page lors de l'interaction avec le globe
   function disableScroll() {
-    document.body.style.overflow = "hidden"; // Bloque le scroll
+    document.body.style.overflow = "hidden";
   }
 
   function enableScroll() {
-    document.body.style.overflow = ""; // Rétablit le scroll
+    document.body.style.overflow = "";
   }
 
   // Dessin du globe
@@ -127,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Redimensionnement automatique
   window.addEventListener("resize", function () {
-    width = Math.min(window.innerWidth * 0.8, 600);
+    width = Math.min(window.innerWidth * 0.9, 600);
     height = width;
     projection.scale(width / 2.3).translate([width / 2, height / 2]);
 

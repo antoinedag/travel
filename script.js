@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
   const container = d3.select("#globe-container").style("text-align", "center");
 
-  let width = Math.min(window.innerWidth * 0.8, 600); // Ajustement pour mobile & PC
+  let width = Math.min(window.innerWidth * 0.8, 600);
   let height = width;
 
   const projection = d3
     .geoOrthographic()
-    .scale(width / 2.3) // Adaptation dynamique
+    .scale(width / 2.3)
     .translate([width / 2, height / 2])
     .rotate([0, 0]);
 
@@ -17,7 +17,16 @@ document.addEventListener("DOMContentLoaded", function () {
     .attr("width", width)
     .attr("height", height);
 
-  // Dessin du globe (océan)
+  // Empêcher le scroll de la page lors de l'interaction avec le globe
+  function disableScroll() {
+    document.body.style.overflow = "hidden"; // Bloque le scroll
+  }
+
+  function enableScroll() {
+    document.body.style.overflow = ""; // Rétablit le scroll
+  }
+
+  // Dessin du globe
   svg
     .append("circle")
     .attr("cx", width / 2)
@@ -25,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
     .attr("r", width / 2.3)
     .attr("fill", "#87CEEB");
 
-  // Pays sélectionnés avec couleur et lien
   const selectedCountries = {
     250: { name: "France", color: "#F5A533", url: "france.html" },
     392: { name: "Japon", color: "#EA4848", url: "japan.html" },
@@ -34,7 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
     380: { name: "Italie", color: "#C90076", url: "italia.html" },
   };
 
-  // Charger la carte du monde
   d3.json("https://unpkg.com/world-atlas@2.0.2/countries-110m.json").then(
     (data) => {
       const countries = topojson.feature(data, data.objects.countries);
@@ -86,25 +93,36 @@ document.addEventListener("DOMContentLoaded", function () {
     rotating = true;
     lastX = event.clientX;
     lastY = event.clientY;
+    disableScroll();
   });
+
   svg.on("mousemove", function (event) {
     if (rotating) rotateGlobe(event);
   });
+
   svg.on("mouseup mouseleave", function () {
     rotating = false;
+    enableScroll();
   });
 
-  // Tactile mobile
+  // Gestion du tactile mobile
   svg.on("touchstart", function (event) {
     rotating = true;
     lastX = event.touches[0].clientX;
     lastY = event.touches[0].clientY;
+    disableScroll();
   });
+
   svg.on("touchmove", function (event) {
-    if (rotating) rotateGlobe(event, true);
+    if (rotating) {
+      rotateGlobe(event, true);
+      event.preventDefault(); // Empêche le défilement sur mobile
+    }
   });
+
   svg.on("touchend", function () {
     rotating = false;
+    enableScroll();
   });
 
   // Redimensionnement automatique

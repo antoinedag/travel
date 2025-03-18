@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+  /* ================== INITIALISATION DU GLOBE ================== */
+
   const container = d3
     .select("#globe-container")
     .style("display", "flex")
@@ -22,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
     .attr("width", width)
     .attr("height", height);
 
-  // Empêcher le défilement de la page lors de l'interaction avec le globe
   function disableScroll() {
     document.body.style.overflow = "hidden";
   }
@@ -31,7 +32,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.style.overflow = "";
   }
 
-  // Dessin du globe
+  /* ================== CREATION DU GLOBE ================== */
+
   svg
     .append("circle")
     .attr("cx", width / 2)
@@ -70,11 +72,14 @@ document.addEventListener("DOMContentLoaded", function () {
           d3.select(this).attr("stroke-width", 0.5);
         })
         .on("click", function (event, d) {
-          if (selectedCountries[d.id])
+          if (selectedCountries[d.id]) {
             window.location.href = selectedCountries[d.id].url;
+          }
         });
     }
   );
+
+  /* ================== GESTION DE LA ROTATION ================== */
 
   let lastX,
     lastY,
@@ -110,7 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
     enableScroll();
   });
 
-  // Gestion du tactile mobile
   svg.on("touchstart", function (event) {
     rotating = true;
     lastX = event.touches[0].clientX;
@@ -121,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
   svg.on("touchmove", function (event) {
     if (rotating) {
       rotateGlobe(event, true);
-      event.preventDefault(); // Empêche le défilement sur mobile
+      event.preventDefault();
     }
   });
 
@@ -130,7 +134,8 @@ document.addEventListener("DOMContentLoaded", function () {
     enableScroll();
   });
 
-  // Redimensionnement automatique
+  /* ================== AJUSTEMENT AU REDIMENSIONNEMENT ================== */
+
   window.addEventListener("resize", function () {
     width = Math.min(window.innerWidth * 0.8, 600);
     height = width;
@@ -143,5 +148,56 @@ document.addEventListener("DOMContentLoaded", function () {
       .attr("cy", height / 2)
       .attr("r", width / 2.3);
     svg.selectAll("path").attr("d", path);
+  });
+});
+
+/* ================== GESTION DU SLIDER DE PROGRESSION ================== */
+
+document.addEventListener("DOMContentLoaded", function () {
+  function updateSlider(slider) {
+    const colors = ["red", "orange", "green"];
+    const value = slider.value;
+    const percentage = (value / 2) * 100; // 0%, 50%, 100%
+    const color = colors[value];
+
+    // Appliquer la couleur au point du slider
+    slider.style.setProperty("--slider-color", color);
+
+    // Définir uniquement la partie gauche colorée
+    slider.style.background = `linear-gradient(to right, ${color} 0%, ${color} ${percentage}%, #ddd ${percentage}%)`;
+  }
+
+  document.querySelectorAll(".progress-slider").forEach((slider) => {
+    updateSlider(slider);
+    slider.addEventListener("input", function () {
+      updateSlider(this);
+    });
+  });
+
+  /* ================== AJOUTER UNE NOUVELLE LIGNE ================== */
+
+  document.getElementById("addRow").addEventListener("click", function () {
+    const tableBody = document.getElementById("voyageTableBody");
+    const newRow = document.createElement("tr");
+    newRow.innerHTML = `
+      <td>
+        <select class="country-select">
+          <option value="France">France</option>
+          <option value="Japon">Japon</option>
+          <option value="Brésil">Brésil</option>
+          <option value="Canada">Canada</option>
+          <option value="Italie">Italie</option>
+        </select>
+      </td>
+      <td colspan="3">
+        <input type="range" min="0" max="2" value="0" class="progress-slider"/>
+      </td>`;
+    tableBody.appendChild(newRow);
+
+    const newSlider = newRow.querySelector(".progress-slider");
+    updateSlider(newSlider);
+    newSlider.addEventListener("input", function () {
+      updateSlider(this);
+    });
   });
 });

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suivi des Voyages</title>
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <a href="index.html" class="header">🌍 Découverte du Monde</a>
+
+    <div class="menu">
+      <a href="france.html">🇫🇷 France</a>
+      <a href="japan.html">🇯🇵 Japon</a>
+      <a href="brazil.html">🇧🇷 Brésil</a>
+      <a href="canada.html">🇨🇦 Canada</a>
+      <a href="italia.html">🇮🇹 Italie</a>
+      <a href="countrydesk.html">Country list</a>
+    </div>
+    <div class="header">Suivi des Voyages</div>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Pays</th>
+            <th>Voyage Prévu</th>
+            <th>Voyage Planifié</th>
+            <th>Voyage Effectué</th>
+          </tr>
+        </thead>
+        <tbody id="voyageTableBody">
+          <tr>
+            <td>
+              <select class="country-select">
+                <option value="France">France</option>
+                <option value="Japon">Japon</option>
+                <option value="Brésil">Brésil</option>
+                <option value="Canada">Canada</option>
+                <option value="Italie">Italie</option>
+              </select>
+            </td>
+            <td colspan="3">
+              <input
+                type="range"
+                min="0"
+                max="2"
+                value="0"
+                class="progress-slider"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <button id="addRow">Ajouter une ligne</button>
+    </div>
+  </body>
+</html>
